@@ -61,7 +61,7 @@ gzip is generally slower than lz4 or zstd for ClickHouse workloads.
 
 ## HTTP proxy support {#http-proxy-support}
 
-ClickHouse Connect recognizes the standard `HTTP_PROXY` and `HTTPS_PROXY` environment variables. These variables apply to every client in the process. To configure a proxy per client, pass `http_proxy` or `https_proxy` to `get_client` or `get_async_client`.
+ClickHouse Connect recognizes the standard `HTTP_PROXY` and `HTTPS_PROXY` environment variables. These variables apply to every client in the process. To configure a proxy per client, pass `http_proxy` or `https_proxy` to `get_client` or `get_async_client`. To selectively ignore proxy environment variables per-client, pass `use_env_proxy=False`.
 
 The synchronous client uses `urllib3`. To use a SOCKS proxy, install PySocks and pass a `urllib3.contrib.socks.SOCKSProxyManager` as the `pool_mgr` argument to `get_client`. `pool_mgr` is not supported by the async client.
 

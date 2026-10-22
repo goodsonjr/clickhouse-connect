@@ -183,6 +183,7 @@ class AsyncClient(Client):
         rename_response_column: str | None = None,
         headers: dict[str, str] | None = None,
         native_codec: NativeCodec | None = None,
+        use_env_proxy: bool = True,
     ):
         """
         Async HTTP Client using aiohttp. Initialization is handled via _initialize().
@@ -244,7 +245,7 @@ class AsyncClient(Client):
                 proxy_url = f"http://{https_proxy}"
             else:
                 proxy_url = https_proxy
-        else:
+        elif use_env_proxy:
             scheme = "https" if self.url.startswith("https://") else "http"
             env_proxy = httputil.check_env_proxy(scheme, host, port)
             if env_proxy:

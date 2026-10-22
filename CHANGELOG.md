@@ -5,6 +5,11 @@ This changelog covers the `clickhouse-connect` driver. The independently version
 
 ## UNRELEASED
 
+### Improvements
+
+- Added `use_env_proxy` option to `create_client` and `create_async_client` constructors to create clients
+which do not set proxies from environment variables.
+
 ## 1.11.0, 2026-10-16
 
 ### Bug Fixes

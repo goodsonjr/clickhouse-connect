@@ -6,6 +6,8 @@ from clickhouse_connect.driver.common import coerce_bool
 from clickhouse_connect.driver.exceptions import OperationalError
 from tests.helpers import PROJECT_ROOT_DIR
 
+from .test_proxy import clear_proxy_vars
+
 # See .docker/clickhouse/single_node_tls for the server configuration
 cert_dir = f"{PROJECT_ROOT_DIR}/.docker/clickhouse/single_node_tls/certificates/"
 host = "server1.clickhouse.test"
@@ -51,3 +53,21 @@ def test_mutual_tls(client_factory, call):
         database="default",
     )
     assert call(client.command, "SELECT user()") == "cert_user"
+
+
+def test_ignore_tls_proxy(client_factory, call, monkeypatch):
+    if not coerce_bool(os.environ.get("CLICKHOUSE_CONNECT_TEST_TLS", "False")):
+        pytest.skip("TLS tests not enabled")
+    clear_proxy_vars(monkeypatch)
+
+    monkeypatch.setenv("HTTPS_PROXY", "https://127.0.0.1:1")
+    client = client_factory(
+        interface="https",
+        host=host,
+        port=10843,
+        ca_cert=f"{cert_dir}ca.crt",
+        database="default",
+        use_env_proxy=False,
+    )
+    assert "2" in call(client.command, "SELECT version()")
+    assert call(client.ping) is True

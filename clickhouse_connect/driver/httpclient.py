@@ -111,6 +111,7 @@ class HttpClient(SyncBackendClient):
         rename_response_column: str | None = None,
         headers: dict[str, str] | None = None,
         native_codec: NativeCodec | None = None,
+        use_env_proxy: bool = True,
     ):
         """
         Create an HTTP ClickHouse Connect client
@@ -130,7 +131,7 @@ class HttpClient(SyncBackendClient):
                 if isinstance(verify, str) and verify.lower() == "proxy":
                     verify = True
                     tls_mode = tls_mode or "proxy"
-                if not https_proxy:
+                if not https_proxy and use_env_proxy:
                     https_proxy = check_env_proxy("https", host, port)
                 verify = coerce_bool(verify)
                 if client_cert and (tls_mode is None or tls_mode == "mutual"):
@@ -151,7 +152,7 @@ class HttpClient(SyncBackendClient):
                     pool = owned_pool = get_pool_manager(https_proxy=https_proxy, **options)
                     self._owns_pool_manager = True
             if not pool:
-                if not http_proxy:
+                if not http_proxy and use_env_proxy:
                     http_proxy = check_env_proxy("http", host, port)
                 if http_proxy:
                     pool = get_proxy_manager(host, http_proxy)

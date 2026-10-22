@@ -23,6 +23,7 @@ _BOOL_OPTIONS = frozenset(
         "autogenerate_query_id",
         "autogenerate_session_id",
         "form_encode_query_params",
+        "use_env_proxy",
     }
 )
 _SYNC_INT_OPTIONS = frozenset(
@@ -335,6 +336,7 @@ def create_client(
       (query_arrow, query_df_arrow, insert_arrow), raw, JSON, or caller-provided byte streams. The rust codecs
       require the separate clickhouse-connect-core wheel, installed via the rust extra:
       pip install clickhouse-connect[rust]. Ignored for interface="chdb".
+    :param use_env_proxy: Use proxy servers specified by environment variables if not otherwise specified.
     :return: ClickHouse Connect Client instance
     """
     if _is_chdb_target(interface, dsn):
@@ -500,6 +502,7 @@ async def create_async_client(
       (query_arrow, query_df_arrow, insert_arrow), raw, JSON, or caller-provided byte streams. The rust codecs
       require the separate clickhouse-connect-core wheel, installed via the rust extra:
       pip install clickhouse-connect[rust].
+    :param use_env_proxy: Use proxy servers specified by environment variables if not otherwise specified.
     :return: ClickHouse Connect AsyncClient instance
     """
     if _is_chdb_target(interface, dsn):
